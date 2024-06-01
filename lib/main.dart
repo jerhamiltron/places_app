@@ -37,10 +37,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Great Places',
-      color: Colors.black87,
       debugShowCheckedModeBanner: false,
       theme: theme,
-      home: const PlacesScreen(),
+      home: PlacesScreen(mainContext: context),
     );
   }
 }
