@@ -2,24 +2,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:places_app/models/place.dart';
 
 class PlacesNotifier extends StateNotifier<List<Place>> {
-  PlacesNotifier() : super([]);
+  PlacesNotifier() : super(const []);
 
-  final List<Place> places = [];
+  void addPlace(Place place) {
+    state = [place, ...state];
+  }
 
-  bool selectFavorite(Place place) {
-    final isFavorite = state.contains(place);
-
-    if (isFavorite) {
-      state = state.where((p) => p.id != place.id).toList();
-      return false;
-    } else {
-      state = [...state, place];
-      return true;
-    }
+  void removePlace(Place place) {
+    state = state.where((p) => p.id != place.id).toList();
   }
 }
 
-final placesProvider =
-    StateNotifierProvider<PlacesNotifier, List<Place>>((ref) {
-  return PlacesNotifier();
-});
+final placesProvider = StateNotifierProvider<PlacesNotifier, List<Place>>(
+    (ref) => PlacesNotifier());

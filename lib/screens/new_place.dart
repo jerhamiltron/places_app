@@ -1,33 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:places_app/models/place.dart';
+import 'package:places_app/providers/places_provider.dart';
 
-class NewPlace extends StatefulWidget {
+class NewPlace extends ConsumerStatefulWidget {
   const NewPlace({super.key});
 
   @override
-  State<NewPlace> createState() => _NewPlaceState();
+  ConsumerState<NewPlace> createState() => _NewPlaceState();
 }
 
-class _NewPlaceState extends State<NewPlace> {
+class _NewPlaceState extends ConsumerState<NewPlace> {
   final _formKey = GlobalKey<FormState>();
   var _inProgress = false;
 
   var _enteredTitle = '';
 
-  void _saveItem() async {
+  void _savePlace() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // setState(() {
-      //   _inProgress = true;
-      // });
+      ref.read(placesProvider.notifier).addPlace(Place(title: _enteredTitle));
 
-      Navigator.of(context).pop(
-        Place(
-          id: 'a',
-          title: _enteredTitle,
-        ),
-      );
+      Navigator.of(context).pop();
     }
   }
 
@@ -69,15 +64,10 @@ class _NewPlaceState extends State<NewPlace> {
                         },
                   child: const Text('Reset'),
                 ),
-                ElevatedButton(
-                  onPressed: _inProgress ? null : _saveItem,
-                  child: _inProgress
-                      ? const SizedBox(
-                          height: 16,
-                          width: 16,
-                          child: CircularProgressIndicator(),
-                        )
-                      : const Text('Add Item'),
+                ElevatedButton.icon(
+                  onPressed: _inProgress ? null : _savePlace,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add Place'),
                 )
               ],
             )
@@ -89,6 +79,7 @@ class _NewPlaceState extends State<NewPlace> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add a new place'),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
       ),
       body: content,
     );
