@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:places_app/models/place.dart';
 import 'package:places_app/providers/places_provider.dart';
 import 'package:places_app/widgets/image_input.dart';
+import 'package:places_app/widgets/location_input.dart';
 
 class NewPlace extends ConsumerStatefulWidget {
   const NewPlace({super.key});
@@ -18,14 +19,20 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
 
   var _enteredTitle = '';
   late XFile _enteredImage;
+  late PlaceLocation _enteredLocation;
 
   void _savePlace() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      ref
-          .read(placesProvider.notifier)
-          .addPlace(Place(title: _enteredTitle, image: _enteredImage));
+      if (_enteredImage.path == '' || _enteredLocation.latitude == 0) return;
+
+      ref.read(placesProvider.notifier).addPlace(Place(
+          title: _enteredTitle,
+          image: _enteredImage,
+          location: _enteredLocation));
+
+      if (!context.mounted) return;
 
       Navigator.of(context).pop();
     }
@@ -37,10 +44,19 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
     });
   }
 
+  void _setLocation(PlaceLocation location) {
+    setState(() {
+      _enteredLocation = PlaceLocation(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          address: location.address);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content = SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Form(
         key: _formKey,
         child: Column(
@@ -64,9 +80,11 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
                 _enteredTitle = value!;
               },
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             ImageInput(setImage: _setImage),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
+            LocationInput(setLocation: _setLocation),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

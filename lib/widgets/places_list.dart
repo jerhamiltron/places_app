@@ -54,7 +54,7 @@ class PlacesList extends ConsumerWidget {
               backgroundColor:
                   Theme.of(context).colorScheme.surfaceContainerLowest,
               radius: 27,
-              child: Container(
+              child: SizedBox(
                 height: 48,
                 width: 48,
                 child: ClipRRect(

@@ -82,18 +82,18 @@ class _ImageInputState extends State<ImageInput> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Column(
             children: [
               Text(
-                'Click image again to take a different image.',
+                'Tap again to take another image.',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
                     .copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
               Text(
-                'Long press image to reset',
+                'Long press to reset',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
