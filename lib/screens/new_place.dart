@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:places_app/models/place.dart';
 import 'package:places_app/providers/places_provider.dart';
+import 'package:places_app/widgets/image_input.dart';
 
 class NewPlace extends ConsumerStatefulWidget {
   const NewPlace({super.key});
@@ -15,20 +17,29 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
   var _inProgress = false;
 
   var _enteredTitle = '';
+  late XFile _enteredImage;
 
   void _savePlace() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      ref.read(placesProvider.notifier).addPlace(Place(title: _enteredTitle));
+      ref
+          .read(placesProvider.notifier)
+          .addPlace(Place(title: _enteredTitle, image: _enteredImage));
 
       Navigator.of(context).pop();
     }
   }
 
+  void _setImage(XFile file) {
+    setState(() {
+      _enteredImage = file;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget content = Padding(
+    Widget content = SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
         key: _formKey,
@@ -36,6 +47,7 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
           children: [
             TextFormField(
               maxLength: 50,
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               decoration: const InputDecoration(
                 label: Text('Title'),
               ),
@@ -52,7 +64,9 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
                 _enteredTitle = value!;
               },
             ),
-            const SizedBox(height: 64),
+            const SizedBox(height: 24),
+            ImageInput(setImage: _setImage),
+            const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

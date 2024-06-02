@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:places_app/models/place.dart';
 import 'package:places_app/providers/places_provider.dart';
+import 'package:places_app/screens/place_detail.dart';
 
 class PlacesList extends ConsumerWidget {
   const PlacesList({super.key});
@@ -28,18 +31,38 @@ class PlacesList extends ConsumerWidget {
           onDismissed: (dir) =>
               ref.read(placesProvider.notifier).removePlace(places[index]),
           child: ListTile(
+            minTileHeight: 60,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => PlaceDetailScreen(
+                    place: places[index],
+                  ),
+                ),
+              );
+            },
+            titleAlignment: ListTileTitleAlignment.center,
             title: Text(
               places[index].title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium!
-                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
             ),
-            leading: Container(
-              height: 12,
-              width: 12,
-              alignment: Alignment.center,
-              child: Text('${index + 1}'),
+            leading: CircleAvatar(
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerLowest,
+              radius: 27,
+              child: Container(
+                height: 48,
+                width: 48,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(24)),
+                  child: Image.file(File(places[index].image!.path),
+                      fit: BoxFit.cover),
+                ),
+              ),
             ),
           ),
         ),
