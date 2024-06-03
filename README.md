@@ -1,8 +1,10 @@
 # places_app
 
-A new Flutter project.
+A new Flutter project that allows you to save your favorite places and show them in Google maps! Easy to use and ready for you to get started.
 
 ## Getting Started
+
+![alt text](https://github.com/jerhamiltron/places_app/blob/main/assets/images/video1.mp4?raw=true)
 
 This project is a starting point for a Flutter application.
 
