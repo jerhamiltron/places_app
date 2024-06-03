@@ -4,7 +4,7 @@ A new Flutter project that allows you to save your favorite places and show them
 
 ## Getting Started
 
-![Watch the video](https://youtube.com/shorts/blDLGJv2Qhs?feature=share)
+![Watch the video](https://img.youtube.com/vi/7QKdZX2iCPg/maxresdefault.jpg)(https://youtu.be/7QKdZX2iCPg)
 
 This project is a starting point for a Flutter application.
 
