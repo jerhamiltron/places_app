@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:places_app/models/place.dart';
+import 'package:places_app/screens/map.dart';
 
 class LocationInput extends StatefulWidget {
   const LocationInput({super.key, required this.setLocation});
@@ -19,7 +21,7 @@ class _LocationInputState extends State<LocationInput> {
   var _gettingLocation = false;
 
   String get locationImage {
-    return 'https://maps.googleapis.com/maps/api/staticmap?center=${_location!.latitude},${_location!.longitude}&zoom=14&size=400x400&key=${'AIzaSyB-56jgjLgeIzzmsVZRcM8LzZg4KdBZXuk'}';
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=${_location!.latitude},${_location!.longitude}&zoom=16&size=400x400&maptype=roadmap&markers=color:red%Clabel:A%7C${_location!.latitude},${_location!.longitude}&key=${'AIzaSyB-56jgjLgeIzzmsVZRcM8LzZg4KdBZXuk'}';
   }
 
   void _getLocation() async {
@@ -75,46 +77,39 @@ class _LocationInputState extends State<LocationInput> {
   }
 
   void _pickLocation() async {
-    Location location = Location();
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
-    LocationData locationData;
+    var tempLocation = await Navigator.of(context).push<LatLng>(
+      MaterialPageRoute(
+        builder: (ctx) => const MapScreen(
+          isSelecting: true,
+        ),
+      ),
+    );
 
-    serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      if (serviceEnabled) return;
-    }
+    setState(() {
+      _gettingLocation = true;
+    });
 
-    permissionGranted = await location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) return;
-    }
-
-    locationData = await location.getLocation();
+    if (tempLocation == null) return;
+    var lat = tempLocation.latitude;
+    var lng = tempLocation.longitude;
 
     final url = Uri.parse(
-        'https://maps.googleapis.come/maps/api/geocode/json?latlng=${locationData.latitude},${locationData.longitude}&key=${'AIzaSyB-56jgjLgeIzzmsVZRcM8LzZg4KdBZXuk'}');
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lng&key=${'AIzaSyB-56jgjLgeIzzmsVZRcM8LzZg4KdBZXuk'}');
     final res = await http.get(url);
     final resData = json.decode(res.body);
     final address = resData['results'][0]['formatted_address'];
 
-    var lat = locationData.latitude;
-    var lng = locationData.longitude;
-
-    if (lat == null || lng == null) return;
-
     setState(() {
       _location =
           PlaceLocation(latitude: lat, longitude: lng, address: address);
+      _gettingLocation = false;
     });
 
     if (_location != null) {
       widget.setLocation(
         PlaceLocation(
-          latitude: locationData.latitude!,
-          longitude: locationData.longitude!,
+          latitude: lat,
+          longitude: lng,
           address: address,
         ),
       );

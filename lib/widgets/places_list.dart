@@ -42,13 +42,27 @@ class PlacesList extends ConsumerWidget {
               );
             },
             titleAlignment: ListTileTitleAlignment.center,
-            title: Text(
-              places[index].title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20),
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  places[index].title,
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20),
+                ),
+                Text(
+                  places[index].location.address,
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                )
+              ],
             ),
             leading: CircleAvatar(
               backgroundColor:
