@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,10 +16,10 @@ class NewPlace extends ConsumerStatefulWidget {
 
 class _NewPlaceState extends ConsumerState<NewPlace> {
   final _formKey = GlobalKey<FormState>();
-  var _inProgress = false;
+  final _inProgress = false;
 
   var _enteredTitle = '';
-  late XFile _enteredImage;
+  late File _enteredImage;
   late PlaceLocation _enteredLocation;
 
   void _savePlace() async {
@@ -40,7 +41,7 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
 
   void _setImage(XFile file) {
     setState(() {
-      _enteredImage = file;
+      _enteredImage = File(file.path);
     });
   }
 
